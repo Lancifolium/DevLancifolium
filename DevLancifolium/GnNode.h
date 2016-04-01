@@ -24,8 +24,8 @@ struct GnNode { // 節點
 
 	int *addblacks; // 添加黑子
 	int *addwhites; // 添加白子
-    int numblacks; // 添加黑子數量
-    int numwhites; // 添加白子數量
+	int numblacks; // 添加黑子數量
+	int numwhites; // 添加白子數量
 
 	int labanum; // 標籤數目
 	int *labels; // 標籤(LB) 長度 labanum，萬位以上爲標籤對應數字值，千百爲縱坐標，個十爲橫坐標
