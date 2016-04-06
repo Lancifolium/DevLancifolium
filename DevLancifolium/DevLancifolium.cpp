@@ -7,8 +7,9 @@ void DevLancifolium::init() {
 void DevLancifolium::deleteroot(GnNode *tmproot) {
 	if (tmproot != NULL) {
 		if (tmproot->next != NULL) deleteroot(tmproot->next);
-		for (int tmpi = 0; tmpi < tmproot->nxtnum; tmpi++) deleteroot(tmproot->nxt[tmpi]);
-		tmproot->remove();
+		for (int tmpi = 0; tmpi < tmproot->nxt.size(); tmpi++) {
+			deleteroot(tmproot->nxt[tmpi]);
+		}
 		delete tmproot;
 	}
 }
@@ -16,6 +17,7 @@ void DevLancifolium::deleteroot(GnNode *tmproot) {
 void DevLancifolium::clearall() {
 	while (!branchStack.empty()) branchStack.pop();
 	deleteroot(root);
+	init();
 }
 
 DevLancifolium::DevLancifolium() {
@@ -26,12 +28,6 @@ DevLancifolium::~DevLancifolium() {
 	printf("\nRunning Destructor. \n");
 	clearall();
 }
-
-int DevLancifolium::iswhite(char tmpc) { // 判斷空白符號
-	if (tmpc == ' ' || tmpc == '\n' || tmpc == '\t' || tmpc == 13) return 1;
-	return 0;
-}
-
 
 int DevLancifolium::dealSize() {
 	char tmpnum[3];//, reader;
@@ -51,24 +47,30 @@ int DevLancifolium::dealSize() {
 
 int DevLancifolium::dealAddStones(struct GnNode *tmpnode, int colour) {
 	int tmpx, tmpy;
-	int coorbuff[600]; // 暫存棋子
-	int cont = 0;
 
 	if (colour == 0) return 0;
-	else if (colour != 1) colour = 2;
-
-	while (reader == '[') {
-		tmpx = toupper(fgetc(filebuff)) - 'A';
-		tmpy = toupper(fgetc(filebuff)) - 'A';
-		if ((tmpx >= 0) && (tmpx < siz) && (tmpy >= 0) && (tmpy < siz)) {
-			coorbuff[cont] = tmpx * 100 + tmpy; // ?????????????????
-			cont++;
+	else if (colour == 1) { // 添加黑子
+		while (reader == '[') {
+			tmpx = toupper(fgetc(filebuff)) - 'A';
+			tmpy = toupper(fgetc(filebuff)) - 'A';
+			if ((tmpx >= 0) && (tmpx < siz) && (tmpy >= 0) && (tmpy < siz)) {
+				tmpnode->addblacks.push_back(tmpx * 100 + tmpy);
+			}
+			reader = fgetc(filebuff); // 棄了']'
+			reader = fgetc(filebuff); // '['
 		}
-		reader = fgetc(filebuff); // 棄了']'
-		reader = fgetc(filebuff); // '['
-		if (cont > 599) break;
 	}
-	tmpnode->insertAddStones(coorbuff, cont, colour);
+	else { // 添加白子
+		while (reader == '[') {
+			tmpx = toupper(fgetc(filebuff)) - 'A';
+			tmpy = toupper(fgetc(filebuff)) - 'A';
+			if ((tmpx >= 0) && (tmpx < siz) && (tmpy >= 0) && (tmpy < siz)) {
+				tmpnode->addwhites.push_back(tmpx * 100 + tmpy);
+			}
+			reader = fgetc(filebuff); // 棄了']'
+			reader = fgetc(filebuff); // '['
+		}
+	}
 } // finished dealAddStones
 
 int DevLancifolium::dealMove(struct GnNode *tmpnode, int colour) {
@@ -105,39 +107,37 @@ int DevLancifolium::dealCommentNodename(struct GnNode *tmpnode, int tmpkind) {
 		reader = fgetc(filebuff); // 下一個
 	}
 	buff[tmpi] = '\0';
-	if (tmpkind == 1) tmpnode->insertComment(buff, tmpi);
-	else tmpnode->insertNodename(buff, tmpi);
+	if (tmpkind == 1) tmpnode->comment = buff; // 評論
+	else tmpnode->nodename = buff; // 節點名稱
 	reader = fgetc(filebuff); // 棄了']'
 } // finished dealCommentNodename
 
 int DevLancifolium::dealLabels(struct GnNode *tmpnode, int form) {
-	char tmpform;
-	int tmplength, tmplab[360];
-	int tmpi;
-
-	tmplength = 0;
+	int tmpform;
+	int tmplab;
 	while (reader == '[') {
-		tmplab[tmplength] = toupper(fgetc(filebuff)) - 'A';
-		tmplab[tmplength] *= 100;
-		tmplab[tmplength] += toupper(fgetc(filebuff)) - 'A';
+		tmplab = toupper(fgetc(filebuff)) - 'A';
+		tmplab *= 100;
+		tmplab += toupper(fgetc(filebuff)) - 'A';
 		reader = fgetc(filebuff); // ']'
 		reader = fgetc(filebuff); // '[' or not
-		tmplength++;
+		tmpnode->labels.push_back(tmplab);
 	}
 
 	switch (form) {
 	case 0: // 字母標籤
-		for (tmpi = 0; tmpi < tmplength; tmpi++) tmplab[tmpi] += ('A' + tmpi) * 10000;
+		for ( int tmpi = 0; tmpi < tmpnode->labels.size(); tmpi++)
+			tmpnode->labels[tmpi] += ('A' + tmpi) * 10000;
 		break;
 	case 1: tmpform = 1;
 	case 2: tmpform = 2;
 	case 3: tmpform = 3;
 	case 4: tmpform = 4;
-		for (tmpi = 0; tmpi < tmplength; tmpi++) tmplab[tmpi] += tmpform * 10000;
+		for (int tmpi = 0; tmpi < tmpnode->labels.size(); tmpi++)
+			tmpnode->labels[tmpi] += tmpform * 10000;
 		break;
 	default: break;
 	}
-	tmpnode->insertLabels(tmplab, tmplength);
 	return 1;
 }
 
@@ -229,16 +229,17 @@ int DevLancifolium::configManual(char *filename) {
 	} // finished while true
 } // finished configManual
 
+
 int DevLancifolium::reverse(int deep, struct GnNode *cur) {
 	if (cur == NULL) return 0;
 	//printf("\n|%d|", deep);
 	cur->printbase();
 
-	if (cur->nxtnum > 0) {
+	if (cur->nxt.size() > 0) {
 		deep++;
 	}
 	reverse(deep, cur->next);
-	for (int tmpi = 0; tmpi < cur->nxtnum; tmpi++) {
+	for (int tmpi = 0; tmpi < cur->nxt.size(); tmpi++) {
 		printf("\n");
 		for (int tmpj = 0; tmpj < deep; tmpj++) printf("  ");
 		printf("|%d|", deep);

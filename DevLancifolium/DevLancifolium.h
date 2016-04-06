@@ -3,6 +3,7 @@
 
 #include "GnCalculate.h"
 #include "GnNode.h"
+#include "FunLancifolium.h"
 
 struct DevLancifolium { // 全局結構
 	int siz; // 棋盤規格
@@ -22,9 +23,6 @@ struct DevLancifolium { // 全局結構
 	void clearall();
 	DevLancifolium();
 	~DevLancifolium();
-
-	// 附加函數
-	int iswhite(char tmpc);
 
 	// 棋譜信息函數
 	int dealSize();

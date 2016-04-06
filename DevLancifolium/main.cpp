@@ -7,6 +7,10 @@
 int main(void) {
 	struct DevLancifolium sig;
 	//sig.openfile("tmp.sgf"); // file
-	sig.configManual("tmp.sgf");
-	sig.printfManual();
+	char buff[1000];
+	while (~scanf("%s", buff)) {
+		sig.configManual(buff);
+		sig.printfManual();
+		sig.clearall();
+	}
 }

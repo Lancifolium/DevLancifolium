@@ -17,6 +17,8 @@ struct Funs { // Some functions
         fil = fopen(infile, "r");
         wrl = fopen(oufile, "w");
 
+        if (fil == NULL) return 0;
+
         int deep, tmpi, mod;
         char tmpc, tmpb;
         deep = 0; tmpb = '0'; mod = 0;
@@ -49,9 +51,14 @@ struct Funs { // Some functions
             tmpb = tmpc;
             printf("|%c|%d|", tmpc, tmpc); //system("pause");
         }
-        return 0;
+        return 1;
     }
 };
+
+inline int iswhite(char tmpc) { // 判斷空白符號
+	if (tmpc == ' ' || tmpc == '\n' || tmpc == '\t' || tmpc == 13) return 1;
+	return 0;
+}
 
 #endif // FUNLANCIFOLIUM
 
