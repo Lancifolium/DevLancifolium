@@ -6,7 +6,6 @@ void DevLancifolium::init() {
 
 void DevLancifolium::deleteroot(GnNode *tmproot) {
 	if (tmproot != NULL) {
-		if (tmproot->next != NULL) deleteroot(tmproot->next);
 		for (int tmpi = 0; tmpi < tmproot->nxt.size(); tmpi++) {
 			deleteroot(tmproot->nxt[tmpi]);
 		}
@@ -15,7 +14,7 @@ void DevLancifolium::deleteroot(GnNode *tmproot) {
 }
 
 void DevLancifolium::clearall() {
-	while (!branchStack.empty()) branchStack.pop();
+	//while (!branchStack.empty()) branchStack.pop();
 	deleteroot(root);
 	init();
 }
@@ -26,7 +25,7 @@ DevLancifolium::DevLancifolium() {
 
 DevLancifolium::~DevLancifolium() {
 	printf("\nRunning Destructor. \n");
-	clearall();
+	//clearall();
 }
 
 int DevLancifolium::dealSize() {
@@ -196,14 +195,14 @@ int DevLancifolium::configManual(char *filename) {
 		if (reader == ';') { // ';'
 			tmpNode = curNode;
 			curNode = new struct GnNode;
-			curNode->init(tmpNode); // 父節點指針傳入
-			tmpNode->next = curNode;
+			//curNode->init(tmpNode); // 父節點指針傳入
+			tmpNode->insertNextNode(curNode);
 			configNode(); //
 		}
 		else if (reader == '(') { // '('
 			tmpNode = curNode;
 			curNode = new struct GnNode;
-			curNode->init(tmpNode); //
+			//curNode->init(tmpNode); //
 			tmpNode->insertNextNode(curNode); // 挿入分支
 			branchStack.push(tmpNode); // 上一分支節點入棧
 			reader = fgetc(filebuff);
@@ -232,18 +231,21 @@ int DevLancifolium::configManual(char *filename) {
 
 int DevLancifolium::reverse(int deep, struct GnNode *cur) {
 	if (cur == NULL) return 0;
-	//printf("\n|%d|", deep);
 	cur->printbase();
 
-	if (cur->nxt.size() > 0) {
+	if (cur->nxt.size() > 1) {
 		deep++;
+		for (int tmpi = 0; tmpi < cur->nxt.size(); tmpi++) {
+			printf("\n");
+			for (int tmpj = 0; tmpj < deep; tmpj++) printf(" ");
+
+			printf("#|%d|", deep);
+			reverse(deep, cur->nxt[tmpi]);
+		}
 	}
-	reverse(deep, cur->next);
-	for (int tmpi = 0; tmpi < cur->nxt.size(); tmpi++) {
-		printf("\n");
-		for (int tmpj = 0; tmpj < deep; tmpj++) printf("  ");
-		printf("|%d|", deep);
-		reverse(deep, cur->nxt[tmpi]);
+	else if (cur->nxt.size() == 1) {
+		//printf(", |%d|", deep);
+		reverse(deep, cur->nxt[0]);
 	}
 	return 0;
 }

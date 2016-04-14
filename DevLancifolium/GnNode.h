@@ -17,10 +17,9 @@ using std::vector;
 #define WHITESTONE 2 // 白子
 #define NONE_MOV -1 // 沒有走子記爲-1
 
-struct GnNode { // 節點
+struct GnNode { // 讀取棋譜文件所用節點，亦當可用於戰鬥
 	struct GnNode *parent; // 父節點
 
-	struct GnNode *next; // 子節點 -- 在“;”後面用
 	vector<struct GnNode *> nxt; // 分支節點線性表
 
 	int stoneProp; // 0空節點，1黑走子，2白走子
@@ -34,14 +33,20 @@ struct GnNode { // 節點
     string comment; // 評論
     string nodename; // 節點名稱
 
+	vector<int> liftsave; // 提子保存
+	int liftcolour; // 提子顏色
+
 	void init(struct GnNode *par = NULL); // 此處默認參數在後面不能加
 	GnNode();
+    GnNode(struct GnNode *par);
 
 	int insertNextNode(struct GnNode *tmpnxt);
 	int insertAddStones(int tmpmov, int colour);
 
+    int jud_nextmov(int tmpmov); // 判斷下一個落子是否在next或nxt中，
+
 	void printing() {
-		printf("\n|%p|%p|%p|[%d](%d)", parent, this, next, mov, stoneProp);
+		printf("\n|%p|%p|[%d](%d)", parent, this, mov, stoneProp);
 	}
 	void printbase() {
 		//printf("|%d|%d|%d|", stoneProp, mov, nxtnum);
@@ -49,25 +54,15 @@ struct GnNode { // 節點
 	}
 };
 
-struct GnSave { // 分支讀取時候用來壓棧
-	long long ston[26]; // 棋盤（必須至少64位，8字節），從高位到低位依次是從左到右
-	int currmove; // 當前走子
-	int init() {
-		memset(ston, 0, sizeof(long long) * 26);
-		currmove = -1;
-	}
-	GnSave() { init(); }
-};
-
-struct GnBord {
-    vector<int> bordsave; // 棋子
-    int colour; // 棋子顏色
+struct GnLift { // 保存提子信息，GnNode中已經包含了這個功能
+    vector<int> bordsave; // 提子列表
+    int colour; // 提子顏色
     void init() {
         bordsave.reserve(0);
     }
-    GnBord() {
+    GnLift() {
         init();
     }
-};
+}; // only for GnCalculate
 
 #endif // !GNNODE_H

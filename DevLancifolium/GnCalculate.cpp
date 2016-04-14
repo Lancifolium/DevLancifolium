@@ -201,21 +201,7 @@ int GnCalculate::configDropStone(int colour, int mov) { // 著子判斷，0不�
 
 int GnCalculate::saveCurrBord(int colour, int mov) {
 	// 務必注意是後一手給前一手保存棋盤 ## 暫且做成這樣，或者給上一個保存棋盤也可以
-    /*
-	moveList.push_back(mov + 10000);
-	ston[mov / 100][mov % 100] = 0;
-	currsave.init();
-	int tmpi, tmpj; long long tmpa;
-	tmpj = 0; tmpa = 1;
-	for (; tmpj < siz; tmpj++) { // 逐列進行
-		for (tmpi = 0; tmpi < siz; tmpi++) { // 行標
-			currsave.ston[tmpi] = currsave.ston[tmpi] * tmpa + ston[tmpi][tmpj];
-		}
-		tmpa *= 3;
-	}
-	ston[mov / 100][mov % 100] = colour;
-    return 0; //*/
-    struct GnBord savebord;
+    struct GnLift savebord;
     savebord.colour = colour == 1 ? 2 : 1;
     for (int tmpi = 0; tmpi < siz; tmpi++) {
         for (int tmpj = 0; tmpj < siz; tmpj++) {
@@ -229,43 +215,6 @@ int GnCalculate::saveCurrBord(int colour, int mov) {
 }
 
 int GnCalculate::regainMove() { // 根據棧頂恢復
-    /*
-	if (moveList.empty()) {
-		printf("Reach top! \n");
-		return 1;
-	}
-	else if (moveList.back() >= 10000) { // 有提子
-		int tmp;
-		if (bordList.empty()) {
-			printf("No bord save! \n");
-			tmp = moveList.back() % 10000;
-			ston[tmp / 100][tmp % 100] = 0;
-            //moveList.pop_back();
-			return 2;
-		}
-		int tmpi, tmpj;
-		long long tmpa, tmpb;
-		tmpi = 0; tmpa = 1, tmpb = 3;
-		for (tmpj = siz - 1; tmpj >= 0; tmpj--) { // 恢復棋盤
-			for (tmpi = 0; tmpi < siz; tmpi++) {
-				ston[tmpi][tmpj] = (bordList.back().ston[tmpi] % tmpb) / tmpa;
-			}
-			tmpa *= 3;
-			tmpb *= 3;
-		}
-		tmp = moveList.back() % 10000;
-        //ston[tmp / 100][tmp % 100] = 0;
-        //moveList.pop_back();
-		bordList.pop_back();
-	}
-	else {
-		if (moveList.back() < 0) {
-			printf("Invalid move! \n");
-			return 3;
-		}
-		ston[moveList.back() / 100][moveList.back() % 100] = 0;
-        //moveList.pop_back();
-    } //*/
     if (bordList.empty()) {
         printf("Reach top! \n");
         return 1;
@@ -278,6 +227,5 @@ int GnCalculate::regainMove() { // 根據棧頂恢復
         }
         bordList.pop_back();
     }
-    return 0; //*/
-
+    return 0;
 }

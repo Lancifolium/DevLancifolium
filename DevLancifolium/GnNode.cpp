@@ -3,24 +3,30 @@
 void GnNode::init(struct GnNode *par) { // 初始化（此處的默認參數不能加）
 	parent = par; // 父節點
 
-	next = NULL;
 	nxt.clear();
 	nxt.reserve(0); // 初始分配空間爲0
 
 	stoneProp = EMPTYPOINT; // 空節點，脫先
 	mov = NONE_MOV; // 走子和走子自然手數，沒有走子記爲-1
+	liftcolour = 0;
 
-	addblacks.clear();
+	addblacks.clear(); // 這些以後試著刪除
 	addblacks.reserve(0);
 	addwhites.clear();
 	addwhites.reserve(0);
 
 	labels.clear();
 	labels.reserve(0);
+	liftsave.clear();
+	liftsave.reserve(0);
 } // finished init
 
 GnNode::GnNode() {
 	init();
+}
+
+GnNode::GnNode(struct GnNode *par) {
+    init(par);
 }
 
 int GnNode::insertNextNode(struct GnNode *tmpnxt) { // 挿入後續節點
@@ -36,4 +42,3 @@ int GnNode::insertAddStones(int tmpmov, int colour) {
 		addwhites.push_back(tmpmov);
 	}
 }
-
