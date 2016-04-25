@@ -27,6 +27,12 @@
     <ClInclude Include="FunLancifolium.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MovLancifolium.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UniLancifolium.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GnCalculate.cpp">
@@ -39,6 +45,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DevLancifolium.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MovLancifolium.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UniLancifolium.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

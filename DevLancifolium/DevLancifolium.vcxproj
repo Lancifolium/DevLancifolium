@@ -150,12 +150,16 @@
     <ClInclude Include="GnCalculate.h" />
     <ClInclude Include="GnNode.h" />
     <ClInclude Include="DevLancifolium.h" />
+    <ClInclude Include="MovLancifolium.h" />
+    <ClInclude Include="UniLancifolium.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GnCalculate.cpp" />
     <ClCompile Include="GnNode.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="DevLancifolium.cpp" />
+    <ClCompile Include="MovLancifolium.cpp" />
+    <ClCompile Include="UniLancifolium.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Plan.txt" />

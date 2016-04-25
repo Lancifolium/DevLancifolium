@@ -263,6 +263,7 @@ int MovLancifolium::regainMove() { // 恢復提子
     printf("-----------\n");
     if (curNode == root) { // 到達根
         printf("Reaching top. \n");
+        return 1;
 	}
 	else {
 		if (curNode->addblacks.size() > 0) { // 撤銷置子
@@ -281,8 +282,9 @@ int MovLancifolium::regainMove() { // 恢復提子
 			}
 		}
 		ston[curNode->mov / 100][curNode->mov % 100] = 0; // 撤銷落子
-        printf(" @ mov: %d $ [%d] ", curNode->mov, curNode);
+        printf(" @ mov: %d $ [%p] ", curNode->mov, curNode);
 		curNode = curNode->parent; // 回溯一個節點
-        printf("$ [%d]\n", curNode);
+        printf("$ [%p]\n", curNode);
+        return 0;
 	}
 }
